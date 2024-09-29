@@ -1,0 +1,142 @@
+import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.Random;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Pila pila = null;
+
+        // Inicializa la pila con un tamaño válido
+        while (pila == null) {
+            try {
+                System.out.println("Ingrese el tamaño de la pila:");
+                int tam = sc.nextInt();
+                pila = new Pila(tam);
+            } catch (InputMismatchException e) {
+                System.out.println("Error. Ingrese un número entero válido.");
+                sc.next(); // Limpiar el buffer del escáner
+            }
+        }
+
+        int opcion = 0;
+        // Menú principal del programa
+        do {
+            try {
+                System.out.println("\nMenú:");
+                System.out.println("1. Ingresar dato");
+                System.out.println("2. Eliminar dato");
+                System.out.println("3. Mostrar pila");
+                System.out.println("4. Rellenar pila con letras aleatorias");
+                System.out.println("5. Salir");
+                System.out.print("Ingrese una opción: ");
+                opcion = sc.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        ingresarDato(pila, sc);
+                        break;
+                    case 2:
+                        eliminarDato(pila);
+                        break;
+                    case 3:
+                        mostrarPila(pila);
+                        break;
+                    case 4:
+                        rellenarPila(pila);
+                        break;
+                    case 5:
+                        salir();
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Por favor, seleccione una opción del 1 al 5.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error. Ingrese un número entero válido.");
+                sc.next(); // Limpiar el buffer del escáner
+            }
+        } while (opcion != 5);
+
+        sc.close();
+    }
+
+    // Clase que maneja la pila
+    static class Pila {
+        private char[] pila;
+        private int tope;
+
+        public Pila(int tamaño) {
+            pila = new char[tamaño];
+            tope = 0;
+        }
+
+        public int getTope() {
+            return tope;
+        }
+
+        public void setTope(int tope) {
+            this.tope = tope;
+        }
+
+        public char[] getPila() {
+            return pila;
+        }
+    }
+
+    // Método para ingresar un dato en la pila
+    public static void ingresarDato(Pila pila, Scanner sc) {
+        if (pila.getTope() < pila.getPila().length) {
+            System.out.print("Ingrese una letra minúscula: ");
+            char dato = sc.next().charAt(0);
+            if (Character.isLowerCase(dato)) {
+                pila.getPila()[pila.getTope()] = dato;
+                pila.setTope(pila.getTope() + 1);
+                System.out.println("Letra '" + dato + "' ingresada en la pila.");
+            } else {
+                System.out.println("Error. Ingrese solo letras minúsculas.");
+            }
+        } else {
+            System.out.println("La pila está llena. No se pueden agregar más datos.");
+        }
+    }
+
+    // Método para eliminar el último dato de la pila
+    public static void eliminarDato(Pila pila) {
+        if (pila.getTope() > 0) {
+            char eliminado = pila.getPila()[pila.getTope() - 1];
+            pila.setTope(pila.getTope() - 1);
+            System.out.println("Se eliminó el dato '" + eliminado + "' de la pila.");
+        } else {
+            System.out.println("La pila está vacía. No hay datos para eliminar.");
+        }
+    }
+
+    // Método para mostrar los datos actuales en la pila
+    public static void mostrarPila(Pila pila) {
+        if (pila.getTope() > 0) {
+            System.out.println("Datos actuales en la pila:");
+            for (int i = pila.getTope() - 1; i >= 0; i--) {
+                System.out.println(pila.getPila()[i]);
+            }
+        } else {
+            System.out.println("La pila está vacía.");
+        }
+    }
+
+    // Método para rellenar la pila con letras aleatorias
+    public static void rellenarPila(Pila pila) {
+        Random random = new Random();
+        for (int i = pila.getTope(); i < pila.getPila().length; i++) {
+            char letra = (char) ('a' + random.nextInt(26)); // Genera una letra minúscula aleatoria
+            pila.getPila()[i] = letra;
+        }
+        pila.setTope(pila.getPila().length);
+        System.out.println("La pila ha sido rellenada con letras aleatorias.");
+    }
+
+    // Método para finalizar el programa
+    public static void salir() {
+        System.out.println("Saliendo del programa. ¡Hasta luego!");
+    }
+}
